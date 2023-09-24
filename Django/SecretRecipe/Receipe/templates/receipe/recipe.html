@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block start %}
+
+    <div class="container px-4 py-5" id="featured-3">
+        <h1 class="pb-2 border-bottom">
+            <div class="row align-items-center">
+                <div class="col">
+                    Secret Recipe : {{ recipe.Name }}
+                </div>
+                <div class="col-auto">
+                    <hr class="my-0">
+                </div>
+                <div class="col-auto">
+                    <a href="{% url 'update_recipe' recipe.Id %}">
+                        <button type="button" class="btn btn-warning">Update</button>
+                    </a>
+                </div>
+                <div class="col-auto">
+                    <a href="{% url 'delete_recipe' recipe.Id %}">
+                        <button type="button" class="btn btn-danger">Delete</button>
+                    </a>
+                </div>
+                <div class="col-auto">
+                    <a href="{% url 'home' %}">
+                        <button type="button" class="btn btn-primary">All Recipes</button>
+                    </a>
+                </div>
+            </div>
+        </h1>
+    </div>      
+
+    <div class="card mb-5 shadow" style="margin-left: 50px; margin-right: 50px;">
+        <img src="{{ recipe.Image }}" alt="Recipe Image" class="card-img-top recipe-img">
+        <div class="card-body">
+            <h1 class="card-title">{{ recipe.Name }}</h1>
+            <p class="card-text">{{ recipe.Description }}</p>
+            <h2 class="mt-4">Steps</h2>
+            {% for step in recipe.Steps %}
+            <div class="card mb-3">
+                <div class="card-header">
+                    Step {{ forloop.counter }}
+                </div>
+                <div class="card-body shadow">
+                    <h5 class="card-title">{{ step.Title }}</h5>
+
+                    <ul>
+                        {% for description in step.Descriptions %}
+                        <li>{{ description }}</li>
+                        {% endfor %}
+                    </ul>
+                    
+                    {% if step.Ingredients|length > 0 %}
+                    <h6>Ingredients:</h6>
+                    {% endif %}
+                    <ul>
+                        {% for ingredient in step.Ingredients %}
+                        <li>{{ ingredient }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+body {
+    background-color: blueviolet;
+}
+
+h1 {
+    padding: 50px;
+    text-align: center;
+    font-weight: bold;
+    color: azure;
+}
+
+form {
+    margin-left: 40%;
+
+    font-weight: bold;
+    color: azure;
+}
+
+button {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#result {
+    width: 400px;
+    height: 80px;
+    border: solid blue 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+h2 {
+    text-align: center;
+}

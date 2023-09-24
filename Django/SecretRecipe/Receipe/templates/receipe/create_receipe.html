@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block start %}
+
+<div class="container" style="margin-top: 60px; margin-bottom: 90px;">
+    <div class="container px-4 py-5" id="featured-3">
+        <h1 class="pb-2 border-bottom">
+            <div class="row align-items-center">
+                <div class="col">
+                    Create A Secret Recipe
+                </div>
+                <div class="col-auto">
+                    <hr class="my-0">
+                </div>
+                <div class="col-auto">
+                    <a href="{% url 'home' %}">
+                        <button type="button" class="btn btn-warning">All Recipes</button>
+                    </a>
+                </div>
+            </div>
+        </h1>
+
+    </div>
+
+    <div style="margin-left: 20px; margin-right: 20px;"> 
+    <form action="{% url 'create_recipe' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <input type="hidden" name="recipe_id" value="{% if recipe %}{{ recipe.Id }}{% endif %}">
+
+        <div class="mb-3">
+            <label for="recipe_name" class="form-label">Recipe Name</label>
+            <input type="text" class="form-control" required id="recipe_name" name="name" value="{{ recipe.Name }}">
+        </div>
+        
+        <div class="mb-3">
+            <label for="recipe_description" class="form-label">Recipe Description</label>
+            <textarea class="form-control" required id="recipe_description" name="description">{{ recipe.Description }}</textarea>
+        </div>
+        
+        <div class="mb-3">
+            <label for="recipe_image" class="form-label">Recipe Image</label>
+            <input type="file" class="form-control" id="recipe_image" name="image">
+        </div>
+        
+        <div id="steps_container">
+            {% for step in recipe.Steps %}
+            <div class="mb-3">
+                <label for="step_title_{{ forloop.counter }}" class="form-label">Step {{ forloop.counter }}</label>
+                <input type="text" class="form-control" id="step_title_{{ forloop.counter }}" name="step_title_{{ forloop.counter }}" value="{{ step.Title }}">
+                <textarea class="form-control" id="step_description_{{ forloop.counter }}" name="step_description_{{ forloop.counter }}">{{ step.Descriptions }}</textarea>
+                <input type="text" class="form-control" id="step_ingredients_{{ forloop.counter }}" name="step_ingredients_{{ forloop.counter }}" value="{{ step.Ingredients|join:', ' }}">
+            </div>
+            {% endfor %}
+        </div>
+        
+        <button type="button" class="btn btn-primary" onclick="addStep()">Add Step</button>
+        <button type="submit" class="btn btn-success">Save Recipe</button>
+    </form>
+    </div>
+
+</div>
+
+<script>
+    function addStep() {
+        var stepNumber = document.querySelectorAll('[id^=step_title_]').length + 1;
+        var stepContainer = document.getElementById('steps_container');
+        var stepDiv = document.createElement('div');
+        stepDiv.className = 'mb-3';
+        
+        var stepTitleLabel = document.createElement('label');
+        stepTitleLabel.setAttribute('for', 'step_title_' + stepNumber);
+        stepTitleLabel.className = 'form-label';
+        stepTitleLabel.innerText = 'Step ' + stepNumber;
+        
+        var stepTitleInput = document.createElement('input');
+        stepTitleInput.type = 'text';
+        stepTitleInput.className = 'form-control';
+        stepTitleInput.id = 'step_title_' + stepNumber;
+        stepTitleInput.name = 'step_title_' + stepNumber;
+        stepTitleInput.placeholder = "Title"
+        
+        var stepDescriptionTextarea = document.createElement('textarea');
+        stepDescriptionTextarea.className = 'form-control';
+        stepDescriptionTextarea.id = 'step_description_' + stepNumber;
+        stepDescriptionTextarea.name = 'step_description_' + stepNumber;
+        stepDescriptionTextarea.placeholder = "Description"
+        
+        var stepIngredientsInput = document.createElement('input');
+        stepIngredientsInput.type = 'text';
+        stepIngredientsInput.className = 'form-control';
+        stepIngredientsInput.id = 'step_ingredients_' + stepNumber;
+        stepIngredientsInput.name = 'step_ingredients_' + stepNumber;
+        stepIngredientsInput.placeholder = "Ingredients"
+        
+        stepDiv.appendChild(stepTitleLabel);
+        stepDiv.appendChild(stepTitleInput);
+        stepDiv.appendChild(stepDescriptionTextarea);
+        stepDiv.appendChild(stepIngredientsInput);
+        
+        stepContainer.appendChild(stepDiv);
+    }
+</script>
+
+{% endblock %}

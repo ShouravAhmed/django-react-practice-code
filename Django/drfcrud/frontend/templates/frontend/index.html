@@ -1,0 +1,392 @@
+{% extends "base.html" %} 
+{% block start %}
+<div class="container">
+  <div id="text-container" class="shadow-lg rounded">
+    <div id="form-wrapper">
+      <form id="form">
+        <div class="flex-wrapper">
+          <div style="flex: 3">
+            <input
+              id="title"
+              class="form-control"
+              type="text"
+              name="title"
+              placeholder="Add Task"
+            />
+          </div>
+          <div style="flex: 1">
+            <input
+              type="submit"
+              id="submit"
+              class="btn btn-success"
+              style="width: 100%"
+            />
+          </div>
+        </div>
+        <div style="flex: 6">
+          <textarea
+            id="note"
+            class="form-control"
+            type="text"
+            name="note"
+            placeholder="Note"
+            style="width: 75%"
+          >
+          </textarea>
+        </div>
+      </form>
+    </div>
+
+    <div id="list-wrapper"></div>
+
+    <div id="popup-overlay" class="hidden"></div>
+    <div id="popup-content" class="hidden">
+      <button class="close-popup">&times;</button>
+      <h2>Edit Task</h2>
+      <form id="" class="popup-form">
+        <input
+          id="popup-title"
+          class="form-control"
+          type="text"
+          name="popup-title"
+          placeholder="Edit Title"
+        />
+        <textarea
+          id="popup-description"
+          class="form-control"
+          type="text"
+          name="popup-description"
+          placeholder="Edit Description"
+        ></textarea>
+        <button id="popup-update-button" class="btn btn-success">Update</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  
+  // --------------------------------------------------
+  // CSRF
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  const csrftoken = getCookie("csrftoken");
+
+  // --------------------------------------------------
+  // INIT
+  const todoListWrapper = document.querySelector("#list-wrapper");
+
+  function resetPage() {
+    document.querySelector("#form").reset();
+    todoListWrapper.innerHTML = "";
+
+    const url = "http://127.0.0.1:8000/api/todo-list/";    
+    fetch(url)
+      .then((resp) => resp.json())
+      .then((data) => {
+        
+        let lastDate = "";
+
+        for (let item of data) {
+          const checked = item.completed ? "checked" : "";
+          const element = `
+            <div id="data-row-${item.id}" class="todo-wrapper">
+              <div class="flex-wrapper">
+          
+                <input type="checkbox" id="checkbox" style="width: 20px; height: 20px; margin-right: 10px" ${checked}>
+          
+                <div style="flex: 7">
+                  <span class="title ${
+                    item.completed ? "strikethrough" : ""
+                  }" style="font-weight: 600;">${item.title}</span>
+                </div>
+          
+                <div style="flex: 1">
+                  <button class="btn btn-sm btn-outline-warning edit">Edit</button>
+                </div>
+          
+                <div style="flex: 1">
+                  <button class="btn btn-sm btn-danger delete">—</button>
+                </div>
+              </div>
+          
+              <div>
+                <span class="description">${item.description}</span>
+              </div>
+            </div>
+          `;
+          if(lastDate != item.date) {
+            lastDate = item.date;
+            const dateElement = `
+              <div class="date todo-wrapper">
+                <div class="flex-wrapper">
+                  <div>
+                    <span class="title" style="font-weight: 600;">${lastDate}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+            todoListWrapper.innerHTML += dateElement;  
+          }
+          todoListWrapper.innerHTML += element;
+        }
+        setDeleteEvent();
+        setCheckEvent();
+        setEditEvent();
+      });
+  };
+  resetPage();
+
+  // --------------------------------------------------
+  // CREATE
+  const addTodoForm = document.querySelector("#form");
+  const addTodoTitle = document.querySelector("#title");
+  const addTodoDescription = document.querySelector("#note");
+
+  addTodoForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const url = "http://127.0.0.1:8000/api/todo-create/";
+
+    todoData = {
+      title: addTodoTitle.value,
+      description: addTodoDescription.value,
+    }
+    document.querySelector("#form").reset();
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify(todoData),
+
+    }).then((resp) => resp.json())
+      .then((item) => {
+        console.log("Todo - Added");
+        
+        const checked = item.completed ? "checked" : "";
+
+        const element = `
+          <div id="data-row-${item.id}" class="todo-wrapper">
+            <div class="flex-wrapper">
+        
+              <input type="checkbox" id="checkbox" style="width: 20px; height: 20px; margin-right: 10px" ${checked}>
+        
+              <div style="flex: 7">
+                <span class="title ${
+                  item.completed ? "strikethrough" : ""
+                }" style="font-weight: 600;">${item.title}</span>
+              </div>
+        
+              <div style="flex: 1">
+                <button class="btn btn-sm btn-outline-warning edit">Edit</button>
+              </div>
+        
+              <div style="flex: 1">
+                <button class="btn btn-sm btn-danger delete">—</button>
+              </div>
+            </div>
+        
+            <div>
+              <span class="description">${item.description}</span>
+            </div>
+          </div>
+        `;
+        let lastDate = document.querySelector('.date')?.textContent.trim();
+        if(lastDate != item.date) {
+          lastDate = item.date;
+          const dateElement = `
+            <div class="date todo-wrapper">
+              <div class="flex-wrapper">
+                <div>
+                  <span class="title" style="font-weight: 600;">${lastDate}</span>
+                </div>
+              </div>
+            </div>
+          `;
+          todoListWrapper.innerHTML = dateElement + todoListWrapper.innerHTML;  
+        }
+        const date = document.querySelector('.date');
+        date.insertAdjacentHTML('afterend', element);
+        
+        setDeleteEvent();
+        setCheckEvent();
+        setEditEvent();
+      });
+  });
+
+  // --------------------------------------------------
+  // DELETE
+  const handleDelete = function (dataRow) {
+    const id = dataRow.id.split("-")[2];
+    const url = `http://127.0.0.1:8000/api/todo-delete/${id}`;
+
+    fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+    }).then((response) => {
+      console.log("Todo - Deleted");
+      dataRow.remove();
+    });
+  };
+  function setDeleteEvent() {
+    delItem = document.querySelectorAll(".delete");
+    for (let i = 0; i < delItem.length; i += 1) {
+      const item = delItem[i];
+      item.addEventListener("click", () => {
+        const dataRow = item.closest(".todo-wrapper");
+        handleDelete(dataRow);
+      });
+    }
+  }
+
+  // --------------------------------------------------
+  // IS CHECKED
+  const handleCheck = function (dataRow) {
+    const id = dataRow.id.split("-")[2];
+    const isChecked = dataRow.querySelector("#checkbox").checked;
+    const title = dataRow.querySelector(".title").textContent;
+    const description = dataRow.querySelector(".description").textContent;
+
+    if (isChecked) {
+      dataRow.querySelector(".title").classList.add("strikethrough");
+    } 
+    else {
+      dataRow.querySelector(".title").classList.remove("strikethrough");
+    }
+
+    const url = `http://127.0.0.1:8000/api/todo-update/${id}/`;
+    todoData = {
+      id: id,
+      title: title,
+      description: description,
+      completed: isChecked,
+    }
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify(todoData),
+    }).then((response) => {
+      console.log("Todo - Updated");
+    });
+  };
+  function setCheckEvent() {
+    checkItem = document.querySelectorAll("#checkbox");
+    for (let i = 0; i < checkItem.length; i += 1) {
+      const item = checkItem[i];
+      item.addEventListener("click", () => {
+        const dataRow = item.closest(".todo-wrapper");
+        handleCheck(dataRow);
+      });
+    }
+  }
+
+  // --------------------------------------------------
+  // EDIT
+  const hidePopup = function () {
+    const overlay = document.querySelector("#popup-overlay");
+    const popup = document.querySelector("#popup-content");
+    if (!popup.classList.contains("hidden")) popup.classList.add("hidden");
+    if (!overlay.classList.contains("hidden")) overlay.classList.add("hidden");
+  };
+  const showPopup = function () {
+    const overlay = document.querySelector("#popup-overlay");
+    const popup = document.querySelector("#popup-content");
+    if (popup.classList.contains("hidden")) popup.classList.remove("hidden");
+    if (overlay.classList.contains("hidden"))
+      overlay.classList.remove("hidden");
+  };
+  
+  const handleEdit = function (dataRow) {
+    document.documentElement.scrollTop = 0; // For modern browsers
+    document.body.scrollTop = 0;
+
+    const id = dataRow.id.split("-")[2];
+    const title = dataRow.querySelector(".title").textContent;
+    const description = dataRow.querySelector(".description").textContent;
+
+    const popup = document.querySelector("#popup-content");
+    popup.querySelector("form").id = id;
+    popup.querySelector("#popup-title").value = title;
+    popup.querySelector("#popup-description").value = description;
+
+    showPopup();
+    console.log("edit button clicked");
+  };
+  function setEditEvent() {
+    editButtons = document.querySelectorAll(".edit");
+    for (let item of editButtons) {
+      item.addEventListener("click", () => {
+        const dataRow = item.closest(".todo-wrapper");
+        handleEdit(dataRow);
+      });
+    }
+  }
+
+  document.querySelector("body").addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      hidePopup();
+      console.log("Escape pressed");
+    }
+  });
+  document.querySelector("#popup-overlay").addEventListener("click", () => {
+    hidePopup();
+    console.log("clicked on overlay");
+  });
+  document.querySelector(".close-popup").addEventListener("click", () => {
+    hidePopup();
+    console.log("clicked on overlay");
+  });
+
+  const popupForm = document.querySelector(".popup-form");
+  popupForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const todoObject = {
+      id: popupForm.id,
+      title: popupForm.querySelector("#popup-title").value,
+      description: popupForm.querySelector("#popup-description").value,
+    };
+
+    const dataRow = document.querySelector(`#data-row-${todoObject.id}`)
+    dataRow.querySelector(".title").textContent = todoObject.title;
+    dataRow.querySelector(".description").textContent = todoObject.description;
+    
+    const url = `http://127.0.0.1:8000/api/todo-update/${todoObject.id}/`;
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify(todoObject),
+
+    }).then((response) => {
+      console.log("Todo - Updated");
+      hidePopup();
+    });
+  });
+  
+</script>
+{% endblock %}

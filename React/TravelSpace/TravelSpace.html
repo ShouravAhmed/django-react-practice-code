@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TravelSpace</title>
+
+    <meta charset=" = utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+
+<body>
+    <div class="mainpage">
+
+        <div class="form-box" id="form-box" style="display: block;">
+            <h3>Add a new Tourist place</h3>
+            <form>
+                <label for="place-name">Name:</label>
+                <input type="text" id="place-name" name="place-name" required> <br>
+
+                <label for="place-address">Address:</label>
+                <input type="text" id="place-address" name="place-address" required> <br>
+
+                <label for="place-rating">Rating:</label>
+                <input type="number" id="place-rating" name="place-rating" min="1" max="10" required> <br>
+
+                <div id="file-upload">
+                    <label for="place-image">Image:</label>
+                    <input type="file" id="place-image" name="place-image" accept="image/*" required>
+                </div>
+
+                <div class="button-row">
+                    <button type="reset" class="reset-btn">Reset</button>
+                    <button type="submit" class="submit-btn">Submit</button>
+                </div>
+            </form>
+            <a href="#" class="back-btn backToTravelPlaces"> Back to Tourist Place List</a>
+        </div>
+
+        <div class="travelspace" id="travelspace" style="display: block;">
+            <h1>Tourist Places</h1>
+            <div class="search">
+                <input type="text" class="searchbox" placeholder="Search Places">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th id="rating">
+                            Rating
+                        </th>
+                        <th>Picture</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+
+                </tbody>
+            </table>
+
+            <a href="#"><button class="add-place">Create New Tourist place</button></a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

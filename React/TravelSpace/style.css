@@ -1,0 +1,188 @@
+/* Body */
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    padding: 3%;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-top: 30px;
+}
+
+/* search bar */
+
+.search {
+    align-items: center;
+    margin-left: 30%;
+}
+
+.searchbox {
+    width: 50%;
+    border: 3px solid lightgrey;
+    padding: 5px;
+    height: 20px;
+    border-radius: 5px;
+    outline: none;
+    font-size: large;
+    font-weight: bold;
+    text-align: center;
+}
+
+.searchbox:focus {
+    color: green;
+    font-size: large;
+    font-weight: bold;
+}
+
+.searchbutton {
+    font-size: large;
+    font-weight: bold;
+    text-align: center;
+    color: orangered;
+    border: 3px solid lightgrey;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+
+/*button*/
+.delete-btn {
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+}
+
+.add-btn {
+    background-color: #004d99;
+    color: #fff;
+    border: none;
+    margin-left: 30px;
+}
+
+.add-place {
+    background-color: #004d99;
+    color: #fff;
+    border: none;
+    margin-left: 32px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Table */
+
+table {
+    background-color: #f4dde1;
+    border-collapse: collapse;
+    width: 95%;
+    margin-right: 20px;
+    margin-left: 30px;
+    margin-top: 40px;
+}
+
+th,
+td {
+    border: 2px solid #fff;
+    text-align: center;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #000;
+    color: #f2f2f2;
+}
+
+/* Form */
+.form-box {
+    margin: 0 auto;
+    margin-top: 15%;
+    max-width: 700px;
+    height: 275px;
+    border: 3px solid black
+}
+
+h3 {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-top: 10px;
+}
+
+form {
+    margin-left: 50px;
+}
+
+label {
+    padding-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
+    width: 100px;
+}
+
+
+
+input {
+
+    width: 200px;
+    padding: 8px;
+    font-size: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+button {
+    padding: 9px 15px;
+    font-size: 10px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.button-row {
+    margin-top: -20px;
+    margin-left: 75%;
+}
+
+.reset-btn {
+    background-color: #ff9100;
+    color: #fff;
+    margin-right: 10px;
+    border: none;
+}
+
+.submit-btn {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+}
+
+.update-btn {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+}
+
+.back-btn {
+
+    margin-top: 10px;
+    margin-left: 75%;
+    color: rgb(61, 2, 61);
+    font-size: 13px;
+}
+
+/* Image */
+
+img {
+    height: 200px;
+    width: 300px;
+    border-radius: 5px;
+}
+
+#rating:hover {
+    cursor: pointer;
+    color: black;
+    background-color: #ddd;
+}
