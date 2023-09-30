@@ -6,8 +6,8 @@ import uuid
 class BaseModel(models.Model):
     id = models.UUIDField(primary_key=True, editable=False,
                           unique=True, default=uuid.uuid4())
-    created_at = models.DateField(auto_now_add=True)
-    updated_at = models.DateField(auto_now=True)
+    created_at = models.DateField(auto_now_add=True, editable=False)
+    updated_at = models.DateField(auto_now=True, editable=False)
 
     class Meta:
         abstract = True
