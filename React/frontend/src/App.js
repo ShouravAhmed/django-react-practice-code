@@ -1,4 +1,3 @@
-import React, { useRef } from 'react';
 import './App.css';
 
 // import {UserPage} from './apps/UserPage'
@@ -14,9 +13,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 
 function App() {
-  let a = React.version;
-  console.log(a);
-
   
   return (
     <div className="App">
