@@ -2,6 +2,8 @@ from django.db import models
 from django.urls import reverse
 import uuid
 
+from django.contrib.auth.models import User
+
 
 class BaseModel(models.Model):
     id = models.UUIDField(primary_key=True, editable=False,
@@ -14,6 +16,7 @@ class BaseModel(models.Model):
 
 
 class Todo(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     is_completed = models.BooleanField(default=False)
@@ -26,3 +29,8 @@ class Todo(BaseModel):
 
     def get_absolute_url(self):
         return reverse("todo_detail", kwargs={"pk": self.pk})
+
+
+class TodoDeadline(BaseModel):
+    todo = models.ForeignKey(Todo, on_delete=models.CASCADE)
+    deadline = models.DateTimeField()

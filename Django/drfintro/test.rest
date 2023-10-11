@@ -1,0 +1,37 @@
+
+POST http://127.0.0.1:8000/signup/
+Content-Type: application/json
+
+{ "username":"01741650727", "password":"@0000000@", "confirm-password":"@0000000@", "is_staff": true }
+###
+
+POST http://127.0.0.1:8000/login/
+Content-Type: application/json
+
+{ "username":"01303206223", "password":"@0000000@"}
+###
+
+GET http://127.0.0.1:8000/get-todos/
+Content-Type: application/json
+Authorization: Token b7c0ca6a0f8eed036dd40a243e1eac8366b713f2
+###
+
+POST http://127.0.0.1:8000/create-todo/
+Content-Type: application/json
+Authorization: Token 9abad56e7ef9cea1aed897b750c87f26b341fa25
+
+{"title":"DRF E-Commerce", "description" : "Complete DRF Ecommerce course in udemy."}
+###
+
+POST http://127.0.0.1:8000/api/token/
+Content-Type: application/json
+
+{ "username":"01303206223", "password":"@0000000@"}
+###
+
+
+POST http://127.0.0.1:8000/api/token/refresh/
+Content-Type: application/json
+
+{ "refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcyODIyMTk4MiwiaWF0IjoxNjk2Njg1OTgyLCJqdGkiOiJkOWMxMGQ0YWY1YmY0MWE0YjdiM2Y0MDUwNjhlZTc5YyIsInVzZXJfaWQiOjJ9.ZiCKr1unDC2e4Wfl4vmPWl8TqnTtbydq86-HWLFbgEQ" }
+###
