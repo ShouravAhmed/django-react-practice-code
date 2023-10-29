@@ -1,19 +1,34 @@
 
-POST http://127.0.0.1:8000/signup/
+
+POST http://127.0.0.1:8000/send-otp/
 Content-Type: application/json
 
-{ "username":"01741650727", "password":"@0000000@", "confirm-password":"@0000000@", "is_staff": true }
+{"phone_number":"01303206223"}
+###
+
+
+POST http://127.0.0.1:8000/api/token/
+Content-Type: application/json
+
+{ "phone_number":"01303206223",  "otp": "891732", "password" : "admin" }
+###
+
+
+POST http://127.0.0.1:8000/api/token/refresh/
+Content-Type: application/json
+
+{ "refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcyOTYwMzQ4MywiaWF0IjoxNjk4NDk5NDgzLCJqdGkiOiI4ZGQ3MzA3Njk0ZDE0ZWE4OGVkMjlkYzkxZjAzNGY5ZSIsInVzZXJfaWQiOiIwMTMwMzIwNjIyMyJ9.Gz8IQnmhcvzQGeO4MitGm7kIYGPmvJ6AHg0wSKrvGYc" }
 ###
 
 POST http://127.0.0.1:8000/login/
 Content-Type: application/json
 
-{ "username":"01303206223", "password":"@0000000@"}
+{ "phone_number":"01303206223", "otp":"257066"}
 ###
 
 GET http://127.0.0.1:8000/get-todos/
 Content-Type: application/json
-Authorization: Token b7c0ca6a0f8eed036dd40a243e1eac8366b713f2
+Authorization: Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk4NDk2OTk0LCJpYXQiOjE2OTg0OTY2OTQsImp0aSI6ImYzNjg4NWI0ZTdhMjRhNGE4NDM3ZTM5ZWU0ODEyNmQxIiwidXNlcl9pZCI6IjAxMzAzMjA2MjIzIn0.zeyKd5sicsD1ZTN9umpU_v25t5QsXNXf1sovcWfTTzU
 ###
 
 POST http://127.0.0.1:8000/create-todo/
@@ -23,15 +38,9 @@ Authorization: Token 9abad56e7ef9cea1aed897b750c87f26b341fa25
 {"title":"DRF E-Commerce", "description" : "Complete DRF Ecommerce course in udemy."}
 ###
 
-POST http://127.0.0.1:8000/api/token/
+
+POST http://127.0.0.1:8000/signup/
 Content-Type: application/json
 
-{ "username":"01303206223", "password":"@0000000@"}
-###
-
-
-POST http://127.0.0.1:8000/api/token/refresh/
-Content-Type: application/json
-
-{ "refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcyODIyMTk4MiwiaWF0IjoxNjk2Njg1OTgyLCJqdGkiOiJkOWMxMGQ0YWY1YmY0MWE0YjdiM2Y0MDUwNjhlZTc5YyIsInVzZXJfaWQiOjJ9.ZiCKr1unDC2e4Wfl4vmPWl8TqnTtbydq86-HWLFbgEQ" }
+{ "username":"01741650727", "password":"@0000000@", "confirm-password":"@0000000@", "is_staff": true }
 ###

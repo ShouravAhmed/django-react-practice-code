@@ -8,6 +8,7 @@
  python3.10 -m pip install --upgrade pip
  pip3.10 install -r requirements.txt
  
+ python manage.py startapp app_name
 
  python manage.py makemigrations
  python manage.py migrate
@@ -20,20 +21,3 @@
  
  pip freeze > requirements.txt
  //=================================
-
-
- 
- //=================================
- // React
- //=================================
- sudo npm install -g n
- sudo n latest
- node --version
-
- npx create-react-app frontend
- npm install react-router-dom
- npm start
-
- npm install axios
- //=================================
-

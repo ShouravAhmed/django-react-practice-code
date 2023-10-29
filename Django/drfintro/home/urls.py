@@ -20,10 +20,14 @@ urlpatterns = [
 
     path('todo/', TodoView.as_view()),
 
-    path('signup/', signup, name='signup'),
+    # path('signup/', signup, name='signup'),
+    # path('login/', login, name='login'),
+    # path('api/token/', LoginView.as_view(), name='token_obtain_pair'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+
+    path('send-otp/', send_otp, name='send_otp'),
     path('login/', login, name='login'),
 
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 

@@ -14,11 +14,34 @@ from .models import Todo, TodoDeadline
 from .serializers import UserSerializer, TodoSerializer, TodoDeadlineSerializer
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import User
+from .models import User
 
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
+from .helper import send_login_otp
+from django.core.cache import cache
+
+
+@api_view(['POST'])
+def send_otp(request):
+    try:
+        if 'phone_number' not in request.data:
+            return Response({"data": "phone number required."}, status=status.HTTP_404_NOT_FOUND)
+
+        phone_number = request.data.get('phone_number')
+        user, created = User.objects.get_or_create(phone_number=phone_number)
+
+        message = send_login_otp(phone_number)
+
+        return Response(
+            {'data': message},
+            status=status.HTTP_200_OK,
+        )
+
+    except Exception as e:
+        return Response({"data": "exception occered", "exception": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(['POST'])
@@ -50,10 +73,20 @@ def signup(request):
 @api_view(['POST'])
 def login(request):
     try:
-        user = User.objects.get(username=request.data.get('username'))
+        phone_number = request.data.get('phone_number')
+        otp = str(request.data.get('otp'))
 
-        if not user.check_password(request.data.get('password')):
-            return Response({"data": "incorrent password"}, status=status.HTTP_404_NOT_FOUND)
+        user = User.objects.get(phone_number=phone_number)
+
+        otp_cache_key = f'OTP_{user.phone_number}'
+
+        otp_expire_in = cache.ttl(otp_cache_key)
+        if otp_expire_in == 0:
+            return Response({"data": "incorrent OTP entered"}, status=status.HTTP_404_NOT_FOUND)
+
+        cached_otp = str(cache.get(otp_cache_key))
+        if cached_otp != otp:
+            return Response({"data": "incorrent OTP entered"}, status=status.HTTP_404_NOT_FOUND)
 
         token, created = Token.objects.get_or_create(user=user)
         serializer = UserSerializer(user)
@@ -82,7 +115,7 @@ def create_todo(request):
         return Response({'status': 400, 'message': 'Exception occurred', 'exception': str(e)})
 
 
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 @api_view(['GET'])
 def get_todos(request):

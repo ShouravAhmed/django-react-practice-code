@@ -22,7 +22,10 @@ export const Excuse = () => {
     }
 
   return (
+    
     <div>
+      <br /><br /> <br /> <br />
+
       <button onClick={generateOfficeExcuse}>Office Excuse</button><br />
       <button onClick={generateDevExcuse}>Developer Excuse</button><br />
       <button onClick={generateFunExcuse}>Fun Excuse</button><br />
