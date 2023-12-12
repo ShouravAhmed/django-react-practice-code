@@ -2,7 +2,6 @@
 
 GET http://127.0.0.1:8000/api/routes/
 Content-Type: application/json
-Authorization: Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk4NTc0MjM4LCJpYXQiOjE2OTg1NzQxNzgsImp0aSI6Ijc2NzZkNzliZjhhYTRlOTg5OTkyYjE1OGZkNTE1MWMxIiwidXNlcl9pZCI6MX0.QlNxGqzC0riB03bqHLTxbszhupSpEUVkRIO5XXf4VB8
 ###
 
 
@@ -16,19 +15,16 @@ Content-Type: application/json
 POST http://127.0.0.1:8000/api/token/
 Content-Type: application/json
 
-{ "phone_number":"01303206223", "otp":"944270", "password" : "1234" }
+{ "phone_number":"01303206223", "otp":"620526", "password" : "4321" }
 ###
 
 
 POST http://127.0.0.1:8000/api/token/refresh/
 Content-Type: application/json
 
-{ "refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNDEzNzAyNSwiaWF0IjoxNjk4NTg1MDI1LCJqdGkiOiIwOTlhNmU5Mzc3YzQ0ZGUxOGQ0ZGQzMGNhNWU1NzU1MyIsInVzZXJfaWQiOiIwMTMwMzIwNjIyMyJ9.uCy1pYOU7XMc65KtRnFvcVfGBhuhPl5BoKXahiqRhUQ" }
+{ "refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNDE1MjQxNiwiaWF0IjoxNjk4NjAwNDE2LCJqdGkiOiI0OTcxNjg4YzU2ZGM0OTUwOGQ5ZjVlZjgxZTQ5MDFlYiIsInVzZXJfaWQiOiIwMTMwMzIwNjIyMyJ9.fHBhKtuTD32BSiJxMtxDnacVbwtvLYpaMOWk1iBsP4w" }
 ###
 
-
-
 GET http://127.0.0.1:8000/api/get-todos/
-Content-Type: application/json
-Authorization: Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk4NTg1MDExLCJpYXQiOjE2OTg1ODQ5NTEsImp0aSI6IjA0ODI3NTlhZWE4ZTRkMGI4MThjYWViOTYwNmIxMzBkIiwidXNlcl9pZCI6IjAxMzAzMjA2MjIzIn0.VehzrtaGP5w-qDyNK_l7f7UsZX9YrLhC3zBa0ro0UqE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk4NjAwNDc2LCJpYXQiOjE2OTg2MDAyNzEsImp0aSI6ImYzNzUyNTFmZTNlNDQwNDRiMDllYTMzNzZjZGRjZGRiIiwidXNlcl9pZCI6IjAxMzAzMjA2MjIzIn0.C8rK3H0hb_reHKnDz_kmJo_EV27is9NoWP7hw81Wtr8
 ###

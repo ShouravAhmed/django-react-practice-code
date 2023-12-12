@@ -10,9 +10,11 @@ import {Link} from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
-export const TopNavbar = () => {
-  const {authData} = useContext(AuthContext);
+export const  TopNavbar = () => {
+  const {authData} = useContext(AuthContext); 
   const {user} = authData;
+
+  console.log("topnav bar: ", user);
   
   return (
     <div>
@@ -27,10 +29,10 @@ export const TopNavbar = () => {
             </span>
           </Link>
         </div>
-        <Link to={(user && user.isLogedin) ? "/profile" : "/login"} className="top-navbar-right">
+        <Link to={user ? "/profile" : "/login"} className="top-navbar-right">
           {
-            (user && user.isLogedin) ? (
-              <span className="top-navbar-user-username">Hi, {(user.fullname.split(' ')[0]).slice(0, 9)}</span>
+            user ? (
+              <span className="top-navbar-user-username">Hi, {user.full_name ? (user.full_name.split(' ')[0]).slice(0, 9) : 'User'}</span>
             ) : (
               <span className="top-navbar-login-button">Login</span>
             )
@@ -38,6 +40,7 @@ export const TopNavbar = () => {
           <img src={UserIcon} alt="User" className="top-navbar-user-icon"/>
         </Link>
       </div>
+      <div className='navbar-bottom'></div>
     </div>
   )
 }

@@ -4,59 +4,105 @@ import BrandLogo from './icons/brand-logo.png';
 import KeyIcon from './icons/key-icon.jpg';
 
 import React from 'react';
+import Axios from 'axios'
 
-import { Toast } from '../components/Toast';
 import { useState } from 'react';
 
 
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import { Navigate } from "react-router-dom";
+
+
+const isCorrectPhoneNumber = (phoneNo) => {
+    if (phoneNo.length < 11 || phoneNo.length === 12 || phoneNo.length > 14) {
+        return false;
+    }
+    if (phoneNo.length === 13 && !phoneNo.startsWith("88")) {
+        return false;
+    }
+    if (phoneNo.length === 14 && !phoneNo.startsWith("+88"))  {
+        return false;
+    }
+
+    if (phoneNo.length > 11) {
+      phoneNo = phoneNo.slice(-11);
+    }
+
+    const validPrefixes = ["013", "014", "015", "016", "017", "018", "019"];
+    if (!validPrefixes.includes(phoneNo.substring(0, 3)))  {
+        return false;
+    }
+
+    if (!phoneNo.substring(3).split("").every((char) => !isNaN(char)))  {
+        return false;
+    }
+    return true;
+}
+
 export const Login = () => {
-    const [toastMsg, setToastMsg] = useState('');
-    const showToast = (Msg) => {
-        setToastMsg(Msg);
-        setTimeout(() => {
-            setToastMsg('');
-        }, 3000);
-    };
-    
+
     const [otpSent, setOtpSent] = useState(false);
     const [otp, setOtp] = useState("");
     const [phoneNo, setPhoneNo] = useState("");
     
-    const isCorrectPhoneNumber = (phoneNo) => {
-        if (phoneNo.length < 11 || phoneNo.length === 12 || phoneNo.length > 14) {
-            return false;
-        }
-        if (phoneNo.length === 13 && !phoneNo.startsWith("88")) {
-            return false;
-        }
-        if (phoneNo.length === 14 && !phoneNo.startsWith("+88"))  {
-            return false;
-        }
+    const { authData } = useContext(AuthContext);
+    const {authToken, saveAuthToken, showToast} = authData;
     
-        if (phoneNo.length > 11) {
-          phoneNo = phoneNo.slice(-11);
-        }
-
-        const validPrefixes = ["013", "014", "015", "016", "017", "018", "019"];
-        if (!validPrefixes.includes(phoneNo.substring(0, 3)))  {
-            return false;
-        }
-    
-        if (!phoneNo.substring(3).split("").every((char) => !isNaN(char)))  {
-            return false;
-        }
-        return true;
+    if(authToken != null) {
+        return <Navigate to='/'/>
     }
-    
-    const submitButtonClicked = () => {
-        if (otpSent) {
-            console.log(`Phone: ${phoneNo} OTP : ${otp}`);
-        } 
-        else if(isCorrectPhoneNumber(phoneNo)) {
-            setOtpSent(true);
-            showToast(`An OTP Code Has Been Sent To Your Phone No   ${phoneNo}`);
+
+    const tryToLogin = async () => {
+        try{
+            const response = await Axios.post("http://127.0.0.1:8000/api/token/", {
+                'phone_number' : phoneNo,
+                'otp' : otp,
+                "password" : "4321" 
+            });
+            
+            const data = ('data' in response) && (await response.data);
+            saveAuthToken(data);
+
+            if(response.status === 200) {
+                return [true, "Loged in Successfully"];
+            }
+            else {
+                return [false, "Enter OTP carefully! Something went wrong."]
+            }
         }
-        else{
+        catch (e) {
+            console.error("Exception: ", e);
+            return [false, "Enter OTP carefully! Something went wrong."]
+        }
+    }
+
+    const sentOTP = async (phoneNo) => {
+        const response = await Axios.post("http://127.0.0.1:8000/api/send-otp/", {
+            'phone_number' : phoneNo,
+        });
+        const data = ('data' in response) && (await response.data);
+        
+        return [data['status']==='OK', data['message']];
+    };
+    
+    const submitButtonClicked = async () => {
+        if (otpSent) {
+            const [status, message] = await tryToLogin();
+            showToast(message);
+
+            if(status) {
+                return <Navigate to='/'/>
+            }
+        } 
+        else if (isCorrectPhoneNumber(phoneNo)) {
+            setOtpSent(true);
+            const [isOtpSent, message] = await sentOTP(phoneNo);
+            if (!isOtpSent) {
+                setOtpSent(false);
+            }
+            showToast(message);
+        } else {
             showToast("Please Enter A Correct Phone Number.");
         }
     };
@@ -69,7 +115,6 @@ export const Login = () => {
 
     return (
         <div className="container">
-            {toastMsg && <Toast message={toastMsg}/>}
             <div className="brand">
                 <img src={BrandLogo} alt="Logo" />
                 <h1>

@@ -9,7 +9,6 @@ import EmailIcon from './icons/mail-icon.png';
 import AddressIcon from './icons/address-icon.png';
 import RightArrow from './icons/right-arrow-icon.png'
 
-import { Toast } from '../components/Toast';
 import { AuthContext } from '../context/AuthContext';
 
 import { useState, useContext } from 'react';
@@ -30,17 +29,10 @@ function getRandomBackgroundColor() {
 
 export const ProfilePage = () => {
   const randomBackgroundColor = getRandomBackgroundColor();
-  const [toastMsg, setToastMsg] = useState('');
-  const showToast = (Msg) => {
-      console.log("toast-msg: " + Msg);
-      setToastMsg(Msg);
-      setTimeout(() => {
-          setToastMsg('');
-      }, 3000);
-  };
+  
   
   const schema = yup.object().shape({
-    fullname: yup
+    full_name: yup
       .string()
       .test('at-least-two-words', 'Full Name should contain at least two words', (value) => {
         if (value) {
@@ -59,17 +51,19 @@ export const ProfilePage = () => {
     resolver: yupResolver(schema),
   });
 
-  const {user, setUser} = useContext(AuthContext);
+  const { authData } = useContext(AuthContext);
+  const {user, saveUser, logout, showToast} = authData;
+  
   const [newUser, setNewUser] = useState(user)
 
   const onSubmit = (data) => {
-    const {fullname, email, address} = data;
-    const tmpUser = { ...user, fullname:fullname, email:email, address: address };
+    const {full_name, email, address} = data;
+    const tmpUser = { ...user, full_name:full_name, email:email, address: address };
     if(JSON.stringify(tmpUser) === JSON.stringify(user)) {
       showToast("Profile Already Updated!");
     }
     else{
-      setUser(tmpUser);
+      saveUser(tmpUser);
       showToast("Your Profile Updated Successfully!");
     }
   };
@@ -80,8 +74,8 @@ export const ProfilePage = () => {
 
   const showErrors = () => {
     let formError = false;
-    if(errors.fullname) {
-      formError = errors.fullname.message;
+    if(errors.full_name) {
+      formError = errors.full_name.message;
     }
     else if (errors.email) {
       formError = errors.email.message;
@@ -94,21 +88,21 @@ export const ProfilePage = () => {
 
   const handleLogout = () => {
     console.log("Logout successfull");
+    logout();
   }
 
   return (
     <div>
-        {toastMsg && <Toast message={toastMsg}/>}
         <br /><br />
         <div className="profile-container">
           
           <div className="profile-header">
             <div className="profile-picture" style={{ background: randomBackgroundColor }}>
-            <div className="initials">{user.fullname.split(' ').map(word => word[0]).join('')}</div>
+            <div className="initials">{user.full_name ? user.full_name.split(' ').map(word => word[0]).join('') : 'U'}</div>
             </div>
 
             <div className="user-info">
-              <div className="username">{user.fullname}</div>
+              <div className="username">{user.full_name || "User"}</div>
               <div className="registered-since">
                 <img src={ClockIcon} alt="reg" className="registration-icon" />
                 Registered 3 yers ago
@@ -118,7 +112,7 @@ export const ProfilePage = () => {
             <div className="user-points-container">
               <div className="user-points">
                 <img src={Coin} alt="Gold Coin Icon" className="gold-coin" />
-                <div className="total-points">100</div>
+                <div className="total-points">{user.points}</div>
                 <div className="points-text">points</div>
               </div>
             </div>
@@ -126,23 +120,23 @@ export const ProfilePage = () => {
 
           <div className="profile-row">
             <img src={CallIcon} alt="PhoneNo" className="icon" />
-            <div className="editable-light">123-456-7890</div>
+            <div className="editable-light">{user.phone_number}</div>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} onChange={onChange}>
             <div className="profile-row">
               <img src={ProfileIcon} alt="UserIcon" className="icon" />
-              <input type="text" className="editable-light textbox" placeholder="Full Name" name="fullname" value={newUser.fullname} {...register("fullname")}/>
+              <input type="text" className="editable-light textbox" placeholder="Full Name" name="full_name" value={newUser.full_name || ''} {...register("full_name")}/>
             </div>
 
             <div className="profile-row">
             <img src={EmailIcon} alt="Email" className="icon" />
-              <input type="email" className="editable-light textbox" placeholder="user@email.com" name="email" value={newUser.email} {...register("email")}/>
+              <input type="email" className="editable-light textbox" placeholder="user@email.com" name="email" value={newUser.email || ''} {...register("email")}/>
             </div>
 
             <div className="profile-row">
               <img src={AddressIcon} alt="Address" className="icon" />
-              <input type="text" className="editable-light textbox" placeholder="Address" name="address" value={newUser.address} {...register("address")}/>
+              <input type="text" className="editable-light textbox" placeholder="Address" name="address" value={newUser.address || ''} {...register("address")}/>
             </div>
             {showErrors() ? <p className='formErrors'>{showErrors()}</p> : ""}
             
